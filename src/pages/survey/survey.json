@@ -1,0 +1,97 @@
+{
+  "age": [
+    {
+      "header": "How old are you?",
+      "key": "age",
+      "type": "number",
+      "placeholderText": "Age"
+    }
+  ],
+  "children": [
+    {
+      "header": "Do you have children?",
+      "key": "childrenBoolean",
+      "type": "boolean"
+    },
+    {
+      "header": "How many children do you have?",
+      "key": "numChildren",
+      "type": "number",
+      "placeholderText": "Number of Children",
+      "mustBeTrue": "childrenBoolean"
+    },
+    {
+      "header": "How old are your children?",
+      "key": "ageOfChildren",
+      "type": "multiNumber",
+      "mustBeTrue": "childrenBoolean"
+    }
+  ],
+  "education": [
+    {
+      "header": "What is the highest level of education you've achieved?",
+      "key": "highestEducation",
+      "type": "dropdown",
+      "src": "external",
+      "dropdownOptions": [
+        {
+          "value": "temporary dropdown option",
+          "label": "temporary dropdown option"
+        },
+        { "value": "temp option #2", "label": "temp option #2" }
+      ]
+    },
+    {
+      "header": "Are you satisfied with your level of education?",
+      "key": "happinessEducation",
+      "type": "dropdown",
+      "dropdownOptions": [
+        { "value": "Yes", "label": "Yes" },
+        { "value": "I want more", "label": "I want more" },
+        { "value": "I wish I had less", "label": "I wish I had less" }
+      ]
+    },
+    {
+      "header": "Do you think your education helped you succeed?",
+      "key": "educationImpact",
+      "type": "boolean"
+    }
+  ],
+  "income": [
+    {
+      "header": "What is your income range?",
+      "subHeader": "We do not track your personal information. All submissions are anonymous.",
+      "key": "incomeLevel",
+      "type": "dropdown",
+      "dropdownOptions": [
+        { "value": "0 - 25,000", "label": "$0 - $25,000" },
+        { "value": "25,000 - 40,000", "label": "$25,000 - $40,000" },
+        { "value": "40,000- 60,000", "label": "$40,000- $60,000" },
+        { "value": "60,000 - 80,000", "label": "$60,000 - $80,000" },
+        { "value": "100,000 - 200,000", "label": "$100,000 - $200,000" },
+        { "value": "200,000 - 500,000", "label": "$200,000 - $500,000" },
+        { "value": "500,000 - 5,000,000", "label": "$500,000 - $5,000,000" },
+        { "value": "5,000,000+", "label": "$5,000,000+" }
+      ]
+    }
+  ],
+  "shlichus": [
+    {
+      "header": "Are you on Shlichus?",
+      "key": "shlichusBoolean",
+      "type": "boolean"
+    }
+  ],
+  "background": [
+    {
+      "header": "Are you a Ba'al Teshuva (BT) or Frum From Birth (FFB)?",
+      "subHeader": "We know people are more complex than this simple term, but we're trying to keep this survey brief.",
+      "key": "BTvsFFB",
+      "type": "dropdown",
+      "dropdownOptions": [
+        { "value": "BT", "label": "BT" },
+        { "value": "FFB", "label": "FFB" }
+      ]
+    }
+  ]
+}
