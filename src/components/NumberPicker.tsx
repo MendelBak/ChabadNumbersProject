@@ -1,21 +1,19 @@
 import { InputNumber } from 'antd'
 import styled from 'styled-components'
 
-export default function NumberPicker ({ placeholderText }: { placeholderText: string }) {
-  console.log('NumberPicker ~ placeholderText:', placeholderText)
+export default function NumberPicker ({ question, updateResults }: { question, updateResults }) {
   const onChange = (value: number) => {
-    console.log('changed', value)
+    updateResults(value)
   }
 
   return (
-    <StyledInputNumber size="large" min={0} max={120} placeholder={placeholderText} onChange={onChange} />
+    <StyledInputNumber size="large" min={0} max={120} placeholder={question.placeholderText} onChange={onChange} />
   )
 }
 
 const StyledInputNumber = styled(InputNumber)`
   width: 30%;
   height: 100%;
-  font-weight: bolder;
   font-size: 50px;
 
   div.ant-input-number-input-wrap {

@@ -1,21 +1,13 @@
 import './App.css'
 import { Layout, theme } from 'antd'
 import { Header, Content, Footer } from 'antd/es/layout/layout'
-import Title from 'antd/es/typography/Title'
 import { Link, Outlet } from 'react-router-dom'
-import styled from 'styled-components'
+import Navbar from './components/Navbar'
 
 function App () {
-  const {
-    token: { colorBgContainer }
-  } = theme.useToken()
   return (
-      <Layout className="App layout" style={{ background: colorBgContainer, height: '98vh' }}>
-      <Header style={{ display: 'flex', alignItems: 'center' }}>
-        <Title level={2}>
-          <StyledLink to="/">The Chabad Numbers Project</StyledLink>
-          </Title>
-      </Header>
+      <Layout className="App layout" style={{ height: '98vh' }}>
+        <Navbar />
       <Content style={{ margin: 1 }}>
           <Outlet />
       </Content>
@@ -23,7 +15,5 @@ function App () {
     </Layout>
   )
 }
-const StyledLink = styled(Link)`
-color: white;
-`
+
 export default App

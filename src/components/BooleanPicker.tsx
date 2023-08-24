@@ -15,11 +15,13 @@ const selectedIconStyle: CSSProperties = {
 
 type selectedIconChoice = 'up' | 'down' | 'none'
 
-export default function BooleanPicker () {
-  const [selectedIcon, setSelectedIcon] = useState<selectedIconChoice>('none')
+export default function BooleanPicker ({ question, updateResults }: {question, updateResults}) {
+  console.log('BooleanPicker ~ question:', question)
+  const [selectedIcon, setSelectedIcon] = useState<selectedIconChoice>(question.response || 'none')
 
   function handleClick (iconName) {
     setSelectedIcon(iconName)
+    updateResults(iconName === 'up')
   }
 
   return (

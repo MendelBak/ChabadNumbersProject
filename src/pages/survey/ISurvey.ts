@@ -9,6 +9,7 @@ export interface IAge {
   key: string;
   type: string;
   placeholderText: string;
+  response?: number;
 }
 
 export interface IChildren {
@@ -18,6 +19,7 @@ export interface IChildren {
   type: string;
   mustBeTrue?: string;
   placeholderText?: string;
+  response?: boolean | string | [number];
 
 }
 
@@ -28,6 +30,7 @@ export interface IEducation {
   type: string;
   src?: string;
   dropdownOptions?: IDropdownOptions[];
+  response?: string | boolean;
 }
 
 export interface IIncome {
@@ -37,6 +40,7 @@ export interface IIncome {
   type: string;
   range?: number[];
   steps?: string;
+  response?: string;
 }
 
 export interface IShlichus {
@@ -44,6 +48,7 @@ export interface IShlichus {
   subHeader?: string;
   key: string;
   type: string;
+  response?: boolean;
 }
 
 export interface IBackground {
@@ -52,13 +57,14 @@ export interface IBackground {
   key: string;
   type: string;
   dropdownOptions?: IDropdownOptions[];
+  response?: string;
 }
 
 export interface ISurvey {
-  age: IAge[];
-  children: IChildren[];
-  education: IEducation[];
-  income: IIncome[];
-  shlichus: IShlichus[];
-  background: IBackground[];
+  Age: IAge[];
+  Children: IChildren[];
+  Education: IEducation[];
+  Income: IIncome[];
+  Shlichus: IShlichus[];
+  Background: IBackground[];
 }

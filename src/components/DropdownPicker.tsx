@@ -1,23 +1,24 @@
 import { Select } from 'antd'
-import { useState } from 'react'
-import { IDropdownOptions } from '../pages/survey/ISurvey'
 
 interface IDropdownPickerProps {
-  dropdownOptions: [IDropdownOptions];
+  question
+  updateResults
 }
 
 export default function DropdownPicker (props: IDropdownPickerProps) {
-  const { dropdownOptions } = props
+  const { question, updateResults } = props
 
-  const [value, setValue] = useState<any>()
+  function handleOnChange (newValue) {
+    updateResults(newValue)
+  }
+
   return (
     <Select
       size='large'
       placeholder='Select a value'
-      onChange={setValue}
+      onChange={handleOnChange}
       style={{ width: 400 }}
-      options={dropdownOptions}
-      value={value}
+      options={question.dropdownOptions}
     />
   )
 }
