@@ -13,17 +13,22 @@ const selectedIconStyle: CSSProperties = {
   cursor: 'pointer'
 }
 
-type selectedIconChoice = 'up' | 'down' | 'none'
+type selectedIconChoice = true | false | undefined
 
 export default function BooleanPicker ({ question, updateResults }: {question, updateResults}) {
-  const [selectedIcon, setSelectedIcon] = useState<selectedIconChoice>(question.response || 'none')
+  // eslint-disable-next-line no-debugger
+  debugger
+  const [selectedIcon, setSelectedIcon] = useState<selectedIconChoice>(question.response || undefined)
 
   function handleClick (iconName) {
     setSelectedIcon(iconName)
-    updateResults(iconName === 'up')
+    updateResults(iconName)
   }
 
   return (
-    <><FiThumbsUp style={selectedIcon === 'up' ? selectedIconStyle : defaultIconStyle } onClick={() => handleClick('up')}/><FiThumbsDown style={selectedIcon === 'down' ? selectedIconStyle : defaultIconStyle} onClick={() => handleClick('down')} /></>
+    <>
+      <FiThumbsUp style={selectedIcon === true ? selectedIconStyle : defaultIconStyle } onClick={() => handleClick(true)}/>
+      <FiThumbsDown style={selectedIcon === false ? selectedIconStyle : defaultIconStyle} onClick={() => handleClick(false)} />
+    </>
   )
 }
