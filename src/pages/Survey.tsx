@@ -21,18 +21,38 @@ export default function Survey () {
   const [questionIndex, setQuestionIndex] = useState(0)
 
   // Get the current section and question
-  const currentSection: IBackground[] | IAge[] | IShlichus[] | IIncome[] | IEducation[] | IChildren[] = surveyData[surveySections[sectionIndex]]
-  const currentQuestion = currentSection[questionIndex]
+  let currentSection: IBackground[] | IAge[] | IShlichus[] | IIncome[] | IEducation[] | IChildren[] = surveyData[surveySections[sectionIndex]]
+  let currentQuestion = currentSection[questionIndex]
 
-  // Check if the current question fulfills the mustBeTrue condition
+  // refresh these items when a user response is recorded
+  useEffect(() => {
+    currentQuestion = surveyResponseObj[surveySections[sectionIndex]][questionIndex]
+    currentSection = surveyResponseObj[surveySections[sectionIndex]]
+  }, [surveyResponseObj])
+
+  console.log(currentSection)
+  // Find the mustBeTrueQuestion, if any
+  // Handle changes to the response of the mustBeTrueQuestion
+  let mustBeTrueQuestion
   let mustBeTrueFulfilled = true
-  if ('mustBeTrue' in currentQuestion) {
-    const mustBeTrueKey = currentQuestion.mustBeTrue
-    const mustBeTrueQuestion = currentSection.find(
-      (question) => question.key === mustBeTrueKey
-    )
-    mustBeTrueFulfilled = !!mustBeTrueQuestion && !!mustBeTrueQuestion.response
-  }
+  useEffect(() => {
+    if ('mustBeTrue' in currentQuestion) {
+      const mustBeTrueKey = currentQuestion.mustBeTrue
+      mustBeTrueQuestion = currentSection.find(
+        (question) => question.key === mustBeTrueKey
+      )
+    }
+
+    // Check if the current question fulfills the mustBeTrue condition
+    if (mustBeTrueQuestion && mustBeTrueQuestion.response != null) {
+      mustBeTrueFulfilled = !!mustBeTrueQuestion.response
+    }
+    if (!mustBeTrueFulfilled) {
+      // Move to the next legal question
+      handleNext()
+    }
+  }, [currentQuestion || currentQuestion?.response])
+
   // Move to the next legal question
   function handleNext () {
     let newSectionIndex = sectionIndex
@@ -51,8 +71,9 @@ export default function Survey () {
         navigate('/results')
       }
 
-      const newSection = surveyData[surveySections[newSectionIndex]]
-      const newQuestion = newSection[newQuestionIndex]
+      const newSection = surveyResponseObj[surveySections[newSectionIndex]]
+      const newQuestion = surveyResponseObj[surveySections[newSectionIndex]][newQuestionIndex]
+
       let newMustBeTrueFulfilled = true
       if (newQuestion.mustBeTrue) {
         const newMustBeTrueKey = newQuestion.mustBeTrue
@@ -60,7 +81,7 @@ export default function Survey () {
           (question) => question.key === newMustBeTrueKey
         )
         newMustBeTrueFulfilled =
-          newMustBeTrueQuestion && newMustBeTrueQuestion.response
+          newMustBeTrueQuestion && (newMustBeTrueQuestion.response === null || newMustBeTrueQuestion.response === undefined || newMustBeTrueQuestion.response === true)
       }
 
       if (newMustBeTrueFulfilled) {
@@ -184,7 +205,7 @@ export default function Survey () {
   )
 }
 const StyledSteps = styled(Steps)`
-  padding: 1% 1%
+  padding: 1% 1%;
 `
 
 const QuestionComponent = styled.div`

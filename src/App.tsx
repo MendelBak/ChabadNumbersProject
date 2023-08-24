@@ -1,7 +1,7 @@
 import './App.css'
-import { Layout, theme } from 'antd'
-import { Header, Content, Footer } from 'antd/es/layout/layout'
-import { Link, Outlet } from 'react-router-dom'
+import { Layout } from 'antd'
+import { Content, Footer } from 'antd/es/layout/layout'
+import { Outlet } from 'react-router-dom'
 import Navbar from './components/Navbar'
 
 function App () {
