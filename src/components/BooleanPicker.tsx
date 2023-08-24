@@ -16,7 +16,6 @@ const selectedIconStyle: CSSProperties = {
 type selectedIconChoice = 'up' | 'down' | 'none'
 
 export default function BooleanPicker ({ question, updateResults }: {question, updateResults}) {
-  console.log('BooleanPicker ~ question:', question)
   const [selectedIcon, setSelectedIcon] = useState<selectedIconChoice>(question.response || 'none')
 
   function handleClick (iconName) {

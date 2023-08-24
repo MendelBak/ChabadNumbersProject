@@ -4,31 +4,27 @@
       "header": "How old are you?",
       "key": "age",
       "type": "number",
-      "placeholderText": "Age",
-      "response": null
+      "placeholderText": "Age"
     }
   ],
   "Children": [
     {
       "header": "Do you have children?",
       "key": "childrenBoolean",
-      "type": "boolean",
-      "response": null
+      "type": "boolean"
     },
     {
       "header": "How many children do you have?",
       "key": "numChildren",
       "type": "number",
       "placeholderText": "Number of Children",
-      "mustBeTrue": "childrenBoolean",
-      "response": null
+      "mustBeTrue": "childrenBoolean"
     },
     {
       "header": "How old are your children?",
       "key": "ageOfChildren",
       "type": "multiNumber",
-      "mustBeTrue": "childrenBoolean",
-      "response": null
+      "mustBeTrue": "childrenBoolean"
     }
   ],
   "Education": [
@@ -43,8 +39,7 @@
           "label": "temporary dropdown option"
         },
         { "value": "temp option #2", "label": "temp option #2" }
-      ],
-      "response": null
+      ]
     },
     {
       "header": "Are you satisfied with your level of education?",
@@ -54,14 +49,12 @@
         { "value": "Yes", "label": "Yes" },
         { "value": "I want more", "label": "I want more" },
         { "value": "I wish I had less", "label": "I wish I had less" }
-      ],
-      "response": null
+      ]
     },
     {
       "header": "Do you think your education helped you succeed?",
       "key": "educationImpact",
-      "type": "boolean",
-      "response": null
+      "type": "boolean"
     }
   ],
   "Income": [
@@ -79,16 +72,14 @@
         { "value": "200,000 - 500,000", "label": "$200,000 - $500,000" },
         { "value": "500,000 - 5,000,000", "label": "$500,000 - $5,000,000" },
         { "value": "5,000,000+", "label": "$5,000,000+" }
-      ],
-      "response": null
+      ]
     }
   ],
   "Shlichus": [
     {
       "header": "Are you on Shlichus?",
       "key": "shlichusBoolean",
-      "type": "boolean",
-      "response": null
+      "type": "boolean"
     }
   ],
   "Background": [
@@ -100,8 +91,7 @@
       "dropdownOptions": [
         { "value": "BT", "label": "BT" },
         { "value": "FFB", "label": "FFB" }
-      ],
-      "response": null
+      ]
     }
   ]
 }

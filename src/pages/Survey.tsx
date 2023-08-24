@@ -1,7 +1,7 @@
 import surveyData from './survey/survey.json'
 import { useEffect, useState } from 'react'
 import BooleanPicker from '../components/BooleanPicker'
-import { ISurvey } from './survey/ISurvey'
+import { IAge, IBackground, IChildren, IEducation, IIncome, IShlichus, ISurvey } from './survey/ISurvey'
 import { useNavigate } from 'react-router-dom'
 import NumberPicker from '../components/NumberPicker'
 import DropdownPicker from '../components/DropdownPicker'
@@ -15,29 +15,111 @@ export default function Survey () {
   const navigate = useNavigate()
   const [surveyResponseObj, setSurveyResponseObj] = useState<ISurvey>(surveyData)
 
-  const surveyKeys = Object.keys(surveyResponseObj)
-  // The survey contains sections such as age, education, etc. Each section can contain multiple questions
-  const [sectionIterator, setSectionIterator] = useState(0)
-  // This tracks the current section in the survey
-  const [currentSection, setCurrentSection] = useState<ISurvey[keyof ISurvey]>(surveyResponseObj[surveyKeys[sectionIterator]])
-  // This tracks the current question Iterator in the current section
-  const [currentQuestionIterator, setCurrentQuestionIterator] = useState(0)
-  const currentQuestion = currentSection[currentQuestionIterator]
+  // Get the survey sections and initialize the section and question iterators
+  const surveySections = Object.keys(surveyData)
+  const [sectionIndex, setSectionIndex] = useState(0)
+  const [questionIndex, setQuestionIndex] = useState(0)
 
-  // Updates the current section when the sectionIterator changes.
-  useEffect(() => {
-    setCurrentSection(surveyResponseObj[surveyKeys[sectionIterator]])
-  }, [sectionIterator])
+  // Get the current section and question
+  const currentSection: IBackground[] | IAge[] | IShlichus[] | IIncome[] | IEducation[] | IChildren[] = surveyData[surveySections[sectionIndex]]
+  const currentQuestion = currentSection[questionIndex]
 
-  // Checks to see if the requiredParentConditions are met and if not to continue to the next question.
-  useEffect(() => {
-    if (!requiredParentConditionMet()) nextQuestion()
-    // if (!requiredParentConditionMet()) setCurrentQuestionIterator(currentVal => currentVal + 1)
-  }, [currentQuestionIterator])
-
-  function returnCurrentQuestion () {
-    return returnQuestionComponent(currentQuestion)
+  // Check if the current question fulfills the mustBeTrue condition
+  let mustBeTrueFulfilled = true
+  if ('mustBeTrue' in currentQuestion) {
+    const mustBeTrueKey = currentQuestion.mustBeTrue
+    const mustBeTrueQuestion = currentSection.find(
+      (question) => question.key === mustBeTrueKey
+    )
+    mustBeTrueFulfilled = !!mustBeTrueQuestion && !!mustBeTrueQuestion.response
   }
+  // Move to the next legal question
+  function handleNext () {
+    let newSectionIndex = sectionIndex
+    let newQuestionIndex = questionIndex
+
+    while (true) {
+      if (newQuestionIndex < currentSection.length - 1) {
+        // Move to the next question in the current section
+        newQuestionIndex++
+      } else if (newSectionIndex < surveySections.length - 1) {
+        // Move to the first question in the next section
+        newSectionIndex++
+        newQuestionIndex = 0
+      } else {
+        // We've reached the end of the survey
+        navigate('/results')
+      }
+
+      const newSection = surveyData[surveySections[newSectionIndex]]
+      const newQuestion = newSection[newQuestionIndex]
+      let newMustBeTrueFulfilled = true
+      if (newQuestion.mustBeTrue) {
+        const newMustBeTrueKey = newQuestion.mustBeTrue
+        const newMustBeTrueQuestion = newSection.find(
+          (question) => question.key === newMustBeTrueKey
+        )
+        newMustBeTrueFulfilled =
+          newMustBeTrueQuestion && newMustBeTrueQuestion.response
+      }
+
+      if (newMustBeTrueFulfilled) {
+        // We've found a legal question, so we can stop here
+        break
+      }
+    }
+
+    setSectionIndex(newSectionIndex)
+    setQuestionIndex(newQuestionIndex)
+  }
+
+  // Move to the previous legal question
+  function handleBack () {
+    let newSectionIndex = sectionIndex
+    let newQuestionIndex = questionIndex
+
+    while (true) {
+      if (newQuestionIndex > 0) {
+        // Move to the previous question in the current section
+        newQuestionIndex--
+      } else if (newSectionIndex > 0) {
+        // Move to the last question in the previous section
+        newSectionIndex--
+        newQuestionIndex =
+          surveyData[surveySections[newSectionIndex]].length - 1
+      } else {
+        // We've reached the beginning of the survey
+        break
+      }
+
+      const newSection = surveyData[surveySections[newSectionIndex]]
+      const newQuestion = newSection[newQuestionIndex]
+      let newMustBeTrueFulfilled = true
+      if (newQuestion.mustBeTrue) {
+        const newMustBeTrueKey = newQuestion.mustBeTrue
+        const newMustBeTrueQuestion = newSection.find(
+          (question) => question.key === newMustBeTrueKey
+        )
+        newMustBeTrueFulfilled =
+          newMustBeTrueQuestion && newMustBeTrueQuestion.response
+      }
+
+      if (newMustBeTrueFulfilled) {
+        // We've found a legal question, so we can stop here
+        break
+      }
+    }
+
+    setSectionIndex(newSectionIndex)
+    setQuestionIndex(newQuestionIndex)
+  }
+
+  // Handle changes to section and question indices
+  useEffect(() => {
+    if (!mustBeTrueFulfilled) {
+      handleNext()
+    }
+  }, [sectionIndex, questionIndex])
 
   function returnQuestionComponent (question) {
     switch (question.type) {
@@ -56,84 +138,45 @@ export default function Survey () {
   }
 
   function updateResults (userResponse) {
-    setSurveyResponseObj(prevState => ({
-      ...prevState,
-      [surveyResponseObj[surveyKeys[sectionIterator]][currentQuestionIterator].response]: userResponse
-    }))
+    setSurveyResponseObj((prevState) => {
+      const newSection = [...prevState[surveySections[sectionIndex]]]
+      newSection[questionIndex] = {
+        ...newSection[questionIndex],
+        response: userResponse
+      }
 
-    console.log(userResponse, surveyResponseObj[surveyKeys[sectionIterator]])
-  }
-
-  function lastQuestion (): void {
-    if (sectionIterator === 0) {
-      // If reached the start of the survey, don't return the back button
-      return null
-    } else if (currentQuestionIterator > 0) {
-      // If not at the beginning of a section. go to the previous question in the section
-      setCurrentQuestionIterator(currentVal => currentVal - 1)
-    } else if (currentQuestionIterator === 0) {
-      // If at the begnning of a section, go back to the first question in the previous section.
-      // Ideally, should just go back one question, but this is much easier. lol
-      setSectionIterator(currentVal => currentVal - 1)
-      setCurrentQuestionIterator(0)
-    }
-  }
-
-  function nextQuestion (): void {
-    if (sectionIterator === surveyKeys.length - 1) {
-      // If reached the end of the survey, go to the results page.
-      navigate('/results')
-    } else if (currentSection.length > currentQuestionIterator + 1) {
-      // If not at the end of a section, go to the next question in the section
-      setCurrentQuestionIterator(currentVal => currentVal + 1)
-    } else if (currentSection.length === currentQuestionIterator + 1) {
-      // If at the end of a section. go to the next section and the first question in the new section
-      setCurrentQuestionIterator(0)
-      setSectionIterator(currentVal => currentVal + 1)
-    }
+      return {
+        ...prevState,
+        [surveySections[sectionIndex]]: newSection
+      }
+    })
   }
 
   function displayBackButton () {
-    if (currentQuestionIterator > 0 || sectionIterator > 0) {
+    if (questionIndex > 0 || sectionIndex > 0) {
       return (
-        <Button type="primary" size="large" style={{ marginRight: '15%' }} onClick={() => lastQuestion()} >Back</Button>
+        <Button type="primary" size="large" style={{ marginRight: '15%' }} onClick={() => handleBack()} >Back</Button>
       )
-    }
-  }
-
-  function requiredParentConditionMet (): boolean {
-    const question = currentSection[currentQuestionIterator]
-    if ('mustBeTrue' in question) {
-      const mustBeTrueKey = question.mustBeTrue
-      const mustBeTrueQuestion = currentSection.find(
-        (question) => question.key === mustBeTrueKey
-      )
-      if (mustBeTrueQuestion && mustBeTrueQuestion.response === true) {
-        // The mustBeTrue condition is met, so you can proceed with this question
-        return true
-      } else {
-        // The mustBeTrue condition is not met, so you should skip this question
-        return false
-      }
-    } else {
-      // There is no mustBeTrue condition for this question, so you can proceed with it
-      return true
     }
   }
 
   return (
     <Layout style={{ height: '100%' }}>
     <StyledContent>
-      <div>
-      <StyledSteps current={sectionIterator} items={surveyKeys.map(key => { return { title: key } })}
+      <StyledSteps current={sectionIndex} items={surveySections.map(key => { return { title: key } })}
   />
-      <Title level={1}>{currentSection[currentQuestionIterator]?.header}</Title>
-      <Title level={4}>{currentSection[currentQuestionIterator]?.subHeader}</Title>
-      </div>
-      <div>{returnCurrentQuestion()}</div>
+      {mustBeTrueFulfilled && (
+      <>
+        <div>
+        <Title level={1}>{currentSection[questionIndex]?.header}</Title>
+        <Title level={4}>{currentSection[questionIndex]?.subHeader}</Title>
+        </div>
+        <div>{returnQuestionComponent(currentQuestion)}</div>
+      </>
+      )}
       <QuestionComponent>
         {displayBackButton()}
-        <Button type="primary" size="large" onClick={() => nextQuestion()} >{sectionIterator === surveyKeys.length - 1 ? 'Submit' : 'Next'}</Button>
+        <Button type="primary" size="large" onClick={() => handleNext()} >{sectionIndex === surveySections.length - 1 ? 'Submit' : 'Next'}</Button>
       </QuestionComponent>
 
     </StyledContent>
