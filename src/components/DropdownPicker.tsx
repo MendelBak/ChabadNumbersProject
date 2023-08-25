@@ -1,4 +1,5 @@
 import { Select } from 'antd'
+import styled from 'styled-components'
 
 interface IDropdownPickerProps {
   question
@@ -13,7 +14,7 @@ export default function DropdownPicker (props: IDropdownPickerProps) {
   }
 
   return (
-    <Select
+    <StyledSelect
       size='large'
       placeholder='Select a value'
       onChange={handleOnChange}
@@ -22,3 +23,9 @@ export default function DropdownPicker (props: IDropdownPickerProps) {
     />
   )
 }
+
+const StyledSelect = styled(Select)`
+  span.ant-select-selection-placeholder {
+    color: black;
+  }
+`

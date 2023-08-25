@@ -16,13 +16,11 @@ const selectedIconStyle: CSSProperties = {
 type selectedIconChoice = true | false | undefined
 
 export default function BooleanPicker ({ question, updateResults }: {question, updateResults}) {
-  // eslint-disable-next-line no-debugger
-  debugger
   const [selectedIcon, setSelectedIcon] = useState<selectedIconChoice>(question.response || undefined)
 
-  function handleClick (iconName) {
-    setSelectedIcon(iconName)
-    updateResults(iconName)
+  function handleClick (value) {
+    setSelectedIcon(value)
+    updateResults(value)
   }
 
   return (

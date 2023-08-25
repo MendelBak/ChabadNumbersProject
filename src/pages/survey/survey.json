@@ -29,26 +29,53 @@
   ],
   "Education": [
     {
-      "header": "What is the highest level of education you've achieved?",
+      "header": "What is your educational background?",
       "key": "highestEducation",
-      "type": "dropdown",
-      "src": "external",
+      "type": "multiSelect",
       "dropdownOptions": [
         {
-          "value": "temporary dropdown option",
-          "label": "temporary dropdown option"
+          "value": "Elementary School/Cheder",
+          "label": "Elementary School/Cheder"
         },
-        { "value": "temp option #2", "label": "temp option #2" }
+        { "value": "High School/Mesivta", "label": "High School/Mesivta" },
+        { "value": "Zal/Yeshiva Gedola", "label": "Zal/Yeshiva Gedola" },
+        { "value": "Trade School", "label": "Trade School" },
+        {
+          "value": "Formal Job Certification",
+          "label": "Formal Job Certification"
+        },
+        { "value": "Associate's Degree", "label": "Associate's Degree" },
+        { "value": "Bachelor's Degree", "label": "Bachelor's Degree" },
+        { "value": "Master's Degree", "label": "Master's Degree" },
+        { "value": "PhD", "label": "PhD" }
       ]
     },
     {
       "header": "Are you satisfied with your level of education?",
+      "subHeader": "Select all that apply",
       "key": "happinessEducation",
-      "type": "dropdown",
+      "type": "multiSelect",
       "dropdownOptions": [
-        { "value": "Yes", "label": "Yes" },
-        { "value": "I want more", "label": "I want more" },
-        { "value": "I wish I had less", "label": "I wish I had less" }
+        {
+          "value": "Yes. I am satisfied with my educational level",
+          "label": "Yes"
+        },
+        {
+          "value": "I wish I had the opportunity for more education",
+          "label": "I wish I had the opportunity for more education"
+        },
+        {
+          "value": "I intend to return to school",
+          "label": "I intend to return to school"
+        },
+        {
+          "value": "I am currently in school",
+          "label": "I am currently in school"
+        },
+        {
+          "value": "I regret spending my time in school",
+          "label": "I regret spending my time in school"
+        }
       ]
     },
     {
@@ -59,7 +86,7 @@
   ],
   "Income": [
     {
-      "header": "What is your income range?",
+      "header": "What is your income range? (personal or household income, if more than one person is working)",
       "subHeader": "We do not track your personal information. All submissions are anonymous.",
       "key": "incomeLevel",
       "type": "dropdown",
@@ -73,6 +100,11 @@
         { "value": "500,000 - 5,000,000", "label": "$500,000 - $5,000,000" },
         { "value": "5,000,000+", "label": "$5,000,000+" }
       ]
+    },
+    {
+      "header": "Do you feel your income is enough to comfortably support your family?",
+      "key": "incomeSufficient",
+      "type": "boolean"
     }
   ],
   "Shlichus": [

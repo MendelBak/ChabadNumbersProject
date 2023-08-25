@@ -54,6 +54,20 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 
         // Alias Token
         colorBgContainer: '#f6ffed'
+      },
+      components: {
+        Button: {
+          borderRadiusLG: 12
+        },
+        InputNumber: {
+          borderRadiusLG: 12
+        },
+        Input: {
+          borderRadiusLG: 12
+        },
+        Select: {
+          borderRadiusLG: 12
+        }
       }
     }}
   >

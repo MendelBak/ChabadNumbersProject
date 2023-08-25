@@ -28,7 +28,6 @@ export interface IEducation {
   subHeader?: string;
   key: string;
   type: string;
-  src?: string;
   dropdownOptions?: IDropdownOptions[];
   response?: string | boolean;
 }

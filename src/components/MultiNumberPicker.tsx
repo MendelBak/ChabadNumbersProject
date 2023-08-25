@@ -2,7 +2,7 @@ import { Row, Col, Slider, InputNumber } from 'antd'
 import { useState } from 'react'
 import styled from 'styled-components'
 
-export default function MultiNumberPicker () {
+export default function MultiNumberPicker ({ question, updateResults } : {question, updateResults}) {
   const [inputValue, setInputValue] = useState(1)
 
   const onChange = (newValue: number) => {
@@ -55,6 +55,7 @@ div.ant-slider-handle {
 const StyledInputNumber = styled(InputNumber)`
   width: 50%;
   font-size: 50px;
+  border-radius: 15%;
 
   input.ant-input-number-input{
     text-align: center;

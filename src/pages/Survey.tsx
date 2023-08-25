@@ -10,6 +10,8 @@ import { Content } from 'antd/es/layout/layout'
 import Title from 'antd/es/typography/Title'
 import styled from 'styled-components'
 import MultiNumberPicker from '../components/MultiNumberPicker'
+import MultiSelectPicker from '../components/MultiSelectPicker'
+import localforage from 'localforage'
 
 export default function Survey () {
   const navigate = useNavigate()
@@ -24,13 +26,32 @@ export default function Survey () {
   let currentSection: IBackground[] | IAge[] | IShlichus[] | IIncome[] | IEducation[] | IChildren[] = surveyData[surveySections[sectionIndex]]
   let currentQuestion = currentSection[questionIndex]
 
-  // refresh these items when a user response is recorded
   useEffect(() => {
+    async function getSurveyFromLocalStorage () {
+      try {
+        return await localforage.getItem('surveyResponse')
+      } catch (error) {
+        console.error('Error fetching user response data from local storage')
+      }
+    }
+
+    getSurveyFromLocalStorage().then((data: ISurvey) => {
+      data ? setSurveyResponseObj(data) : setSurveyResponseObj(surveyData)
+    })
+  }, [])
+
+  useEffect(() => {
+    // refresh these items when a user response is recorded
     currentQuestion = surveyResponseObj[surveySections[sectionIndex]][questionIndex]
     currentSection = surveyResponseObj[surveySections[sectionIndex]]
+
+    try {
+      localforage.setItem('surveyResponse', surveyResponseObj)
+    } catch (error) {
+      console.error('error saving user responses to local storage')
+    }
   }, [surveyResponseObj])
 
-  console.log(currentSection)
   // Find the mustBeTrueQuestion, if any
   // Handle changes to the response of the mustBeTrueQuestion
   let mustBeTrueQuestion
@@ -145,13 +166,15 @@ export default function Survey () {
   function returnQuestionComponent (question) {
     switch (question.type) {
       case 'boolean':
-        return <BooleanPicker key={question} question={question} updateResults={updateResults} />
+        return <BooleanPicker key={question.key} question={question} updateResults={updateResults} />
       case 'number':
-        return <NumberPicker key={question} question={question} updateResults={updateResults} />
+        return <NumberPicker key={question.key} question={question} updateResults={updateResults} />
       case 'dropdown':
-        return <DropdownPicker question={question} updateResults={updateResults} />
+        return <DropdownPicker key={question.key} question={question} updateResults={updateResults} />
+      case 'multiSelect':
+        return <MultiSelectPicker key={question.key} question={question} updateResults={updateResults} />
       case 'multiNumber':
-        return <MultiNumberPicker key={question} />
+        return <MultiNumberPicker key={question.key} question={question} updateResults={updateResults} />
       default:
         console.error('question type not found')
         return null
@@ -159,6 +182,7 @@ export default function Survey () {
   }
 
   function updateResults (userResponse) {
+    console.log('updateResults ~ userResponse:', userResponse)
     setSurveyResponseObj((prevState) => {
       const newSection = [...prevState[surveySections[sectionIndex]]]
       newSection[questionIndex] = {
@@ -176,7 +200,7 @@ export default function Survey () {
   function displayBackButton () {
     if (questionIndex > 0 || sectionIndex > 0) {
       return (
-        <Button type="primary" size="large" style={{ marginRight: '15%' }} onClick={() => handleBack()} >Back</Button>
+        <StyledButton type="primary" size="large" style={{ marginRight: '15%' }} onClick={() => handleBack()} >Back</StyledButton>
       )
     }
   }
@@ -197,13 +221,19 @@ export default function Survey () {
       )}
       <QuestionComponent>
         {displayBackButton()}
-        <Button type="primary" size="large" onClick={() => handleNext()} >{sectionIndex === surveySections.length - 1 ? 'Submit' : 'Next'}</Button>
+        <StyledButton type="primary" size="large" onClick={() => handleNext()} >{sectionIndex === surveySections.length - 1 ? 'Submit' : 'Next'}</StyledButton>
       </QuestionComponent>
 
     </StyledContent>
   </Layout>
   )
 }
+const StyledButton = styled(Button)`
+  .ant-btn-primary{
+    border-radius: 50%;
+  }
+`
+
 const StyledSteps = styled(Steps)`
   padding: 1% 1%;
 `
