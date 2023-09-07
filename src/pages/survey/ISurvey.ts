@@ -1,6 +1,6 @@
 
 export interface IDropdownOptions {
-  value: any;
+  value;
   label: string;
 }
 export interface IAge {

@@ -1,7 +1,15 @@
 import surveyData from './survey/survey.json'
 import { useEffect, useState } from 'react'
 import BooleanPicker from '../components/BooleanPicker'
-import { IAge, IBackground, IChildren, IEducation, IIncome, IShlichus, ISurvey } from './survey/ISurvey'
+import {
+  IAge,
+  IBackground,
+  IChildren,
+  IEducation,
+  IIncome,
+  IShlichus,
+  ISurvey,
+} from './survey/ISurvey'
 import { useNavigate } from 'react-router-dom'
 import NumberPicker from '../components/NumberPicker'
 import DropdownPicker from '../components/DropdownPicker'
@@ -12,10 +20,15 @@ import styled from 'styled-components'
 import MultiNumberPicker from '../components/MultiNumberPicker'
 import MultiSelectPicker from '../components/MultiSelectPicker'
 import localforage from 'localforage'
+import { useSurvey, useSurveyDispatch } from '../SurveyContext'
 
-export default function Survey () {
+export default function Survey() {
   const navigate = useNavigate()
-  const [surveyResponseObj, setSurveyResponseObj] = useState<ISurvey>(surveyData)
+  const testData = useSurvey()
+  console.log(`Survey ~ test:`, testData)
+  const dispatch = useSurveyDispatch()
+  const [surveyResponseObj, setSurveyResponseObj] =
+    useState<ISurvey>(surveyData)
 
   // Get the survey sections and initialize the section and question iterators
   const surveySections = Object.keys(surveyData)
@@ -23,11 +36,17 @@ export default function Survey () {
   const [questionIndex, setQuestionIndex] = useState(0)
 
   // Get the current section and question
-  let currentSection: IBackground[] | IAge[] | IShlichus[] | IIncome[] | IEducation[] | IChildren[] = surveyData[surveySections[sectionIndex]]
+  let currentSection:
+    | IBackground[]
+    | IAge[]
+    | IShlichus[]
+    | IIncome[]
+    | IEducation[]
+    | IChildren[] = surveyData[surveySections[sectionIndex]]
   let currentQuestion = currentSection[questionIndex]
 
   useEffect(() => {
-    async function getSurveyFromLocalStorage () {
+    async function getSurveyFromLocalStorage() {
       try {
         return await localforage.getItem('surveyResponse')
       } catch (error) {
@@ -42,7 +61,8 @@ export default function Survey () {
 
   useEffect(() => {
     // refresh these items when a user response is recorded
-    currentQuestion = surveyResponseObj[surveySections[sectionIndex]][questionIndex]
+    currentQuestion =
+      surveyResponseObj[surveySections[sectionIndex]][questionIndex]
     currentSection = surveyResponseObj[surveySections[sectionIndex]]
 
     try {
@@ -75,7 +95,7 @@ export default function Survey () {
   }, [currentQuestion || currentQuestion?.response])
 
   // Move to the next legal question
-  function handleNext () {
+  function handleNext() {
     let newSectionIndex = sectionIndex
     let newQuestionIndex = questionIndex
 
@@ -93,7 +113,8 @@ export default function Survey () {
       }
 
       const newSection = surveyResponseObj[surveySections[newSectionIndex]]
-      const newQuestion = surveyResponseObj[surveySections[newSectionIndex]][newQuestionIndex]
+      const newQuestion =
+        surveyResponseObj[surveySections[newSectionIndex]][newQuestionIndex]
 
       let newMustBeTrueFulfilled = true
       if (newQuestion.mustBeTrue) {
@@ -102,7 +123,10 @@ export default function Survey () {
           (question) => question.key === newMustBeTrueKey
         )
         newMustBeTrueFulfilled =
-          newMustBeTrueQuestion && (newMustBeTrueQuestion.response === null || newMustBeTrueQuestion.response === undefined || newMustBeTrueQuestion.response === true)
+          newMustBeTrueQuestion &&
+          (newMustBeTrueQuestion.response === null ||
+            newMustBeTrueQuestion.response === undefined ||
+            newMustBeTrueQuestion.response === true)
       }
 
       if (newMustBeTrueFulfilled) {
@@ -116,7 +140,7 @@ export default function Survey () {
   }
 
   // Move to the previous legal question
-  function handleBack () {
+  function handleBack() {
     let newSectionIndex = sectionIndex
     let newQuestionIndex = questionIndex
 
@@ -163,73 +187,125 @@ export default function Survey () {
     }
   }, [sectionIndex, questionIndex])
 
-  function returnQuestionComponent (question) {
+  function returnQuestionComponent(question) {
     switch (question.type) {
       case 'boolean':
-        return <BooleanPicker key={question.key} question={question} updateResults={updateResults} />
+        return (
+          <BooleanPicker
+            key={question.key}
+            question={question}
+            updateResults={updateResults}
+          />
+        )
       case 'number':
-        return <NumberPicker key={question.key} question={question} updateResults={updateResults} />
+        return (
+          <NumberPicker
+            key={question.key}
+            question={question}
+            updateResults={updateResults}
+          />
+        )
       case 'dropdown':
-        return <DropdownPicker key={question.key} question={question} updateResults={updateResults} />
+        return (
+          <DropdownPicker
+            key={question.key}
+            question={question}
+            updateResults={updateResults}
+          />
+        )
       case 'multiSelect':
-        return <MultiSelectPicker key={question.key} question={question} updateResults={updateResults} />
+        return (
+          <MultiSelectPicker
+            key={question.key}
+            question={question}
+            updateResults={updateResults}
+          />
+        )
       case 'multiNumber':
-        return <MultiNumberPicker key={question.key} question={question} updateResults={updateResults} />
+        return (
+          <MultiNumberPicker
+            key={question.key}
+            question={question}
+            updateResults={updateResults}
+          />
+        )
       default:
         console.error('question type not found')
         return null
     }
   }
 
-  function updateResults (userResponse) {
+  function updateResults(userResponse) {
     console.log('updateResults ~ userResponse:', userResponse)
+    console.log('changing data', testData)
     setSurveyResponseObj((prevState) => {
       const newSection = [...prevState[surveySections[sectionIndex]]]
       newSection[questionIndex] = {
         ...newSection[questionIndex],
-        response: userResponse
+        response: userResponse,
       }
 
-      return {
+      const test = {
         ...prevState,
-        [surveySections[sectionIndex]]: newSection
+        [surveySections[sectionIndex]]: newSection,
       }
+
+      dispatch({ type: 'update', key: 'age', response: test })
+      return test
     })
   }
 
-  function displayBackButton () {
+  function displayBackButton() {
     if (questionIndex > 0 || sectionIndex > 0) {
       return (
-        <StyledButton type="primary" size="large" style={{ marginRight: '15%' }} onClick={() => handleBack()} >Back</StyledButton>
+        <StyledButton
+          type="primary"
+          size="large"
+          style={{ marginRight: '15%' }}
+          onClick={() => handleBack()}
+        >
+          Back
+        </StyledButton>
       )
     }
   }
 
   return (
     <Layout style={{ height: '100%' }}>
-    <StyledContent>
-      <StyledSteps current={sectionIndex} items={surveySections.map(key => { return { title: key } })}
-  />
-      {mustBeTrueFulfilled && (
-      <>
-        <div>
-        <Title level={1}>{currentSection[questionIndex]?.header}</Title>
-        <Title level={4}>{currentSection[questionIndex]?.subHeader}</Title>
-        </div>
-        <div>{returnQuestionComponent(currentQuestion)}</div>
-      </>
-      )}
-      <QuestionComponent>
-        {displayBackButton()}
-        <StyledButton type="primary" size="large" onClick={() => handleNext()} >{sectionIndex === surveySections.length - 1 ? 'Submit' : 'Next'}</StyledButton>
-      </QuestionComponent>
-
-    </StyledContent>
-  </Layout>
+      <StyledContent>
+        <StyledSteps
+          current={sectionIndex}
+          items={surveySections.map((key) => {
+            return { title: key }
+          })}
+        />
+        {mustBeTrueFulfilled && (
+          <>
+            <div>
+              <Title level={1}>{currentSection[questionIndex]?.header}</Title>
+              <Title level={4}>
+                {currentSection[questionIndex]?.subHeader}
+              </Title>
+            </div>
+            <div>{returnQuestionComponent(currentQuestion)}</div>
+          </>
+        )}
+        <QuestionComponent>
+          {displayBackButton()}
+          <StyledButton
+            type="primary"
+            size="large"
+            onClick={() => handleNext()}
+          >
+            {sectionIndex === surveySections.length - 1 ? 'Submit' : 'Next'}
+          </StyledButton>
+        </QuestionComponent>
+      </StyledContent>
+    </Layout>
   )
 }
 const StyledButton = styled(Button)`
-  .ant-btn-primary{
+  .ant-btn-primary {
     border-radius: 50%;
   }
 `
@@ -239,13 +315,13 @@ const StyledSteps = styled(Steps)`
 `
 
 const QuestionComponent = styled.div`
-  margin-bottom:5%;
+  margin-bottom: 5%;
 `
 
 const StyledContent = styled(Content)`
-height: 60vh;
-justify-content: space-between;
-text-align: center;
-display: flex;
-flex-direction: column
-  `
+  height: 60vh;
+  justify-content: space-between;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+`

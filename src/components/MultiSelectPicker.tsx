@@ -1,7 +1,13 @@
 import { Select } from 'antd'
 import styled from 'styled-components'
 
-export default function MultiSelectPicker ({ question, updateResults }: {question, updateResults}) {
+export default function MultiSelectPicker({
+  question,
+  updateResults,
+}: {
+  question
+  updateResults
+}) {
   console.log('MultiSelectPicker ~ question:', question)
   const handleChange = (value: string[]) => {
     console.log(`selected ${value}`)
@@ -10,14 +16,14 @@ export default function MultiSelectPicker ({ question, updateResults }: {questio
 
   return (
     <StyledSelect
-    size='large'
-    mode="multiple"
-    allowClear
-    style={{ width: '30%' }}
-    placeholder="Please select"
-    onChange={handleChange}
-    options={question.dropdownOptions}
-  />
+      size="large"
+      mode="multiple"
+      allowClear
+      style={{ width: '30%' }}
+      placeholder="Please select"
+      onChange={handleChange}
+      options={question.dropdownOptions}
+    />
   )
 }
 
