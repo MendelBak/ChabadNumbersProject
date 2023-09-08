@@ -1,6 +1,8 @@
+/* eslint-disable no-prototype-builtins */
 import { Row, Col, Slider, InputNumber } from 'antd'
 import { useState } from 'react'
 import styled from 'styled-components'
+import { useSurvey } from '../SurveyContext'
 
 export default function MultiNumberPicker({
   question,
@@ -10,10 +12,38 @@ export default function MultiNumberPicker({
   updateResults
 }) {
   const [inputValue, setInputValue] = useState(1)
+  const surveyResponseObj = useSurvey()
+
+  const test = Object.values(surveyResponseObj).includes(question?.mustBeTrue)
+  console.log(
+    `surveyResponseObj:`,
+    surveyResponseObj,
+    question,
+    test,
+    question?.mustBeTrue
+  )
 
   const onChange = (newValue: number) => {
     setInputValue(newValue)
   }
+
+  // Some questions have parent questions that must be true. This will return that one, if it matches.
+  // function findParentQuestion(jsonObj, mustBeTrueValue) {
+  //   for (const key in jsonObj) {
+  //     if (jsonObj.hasOwnProperty(key)) {
+  //       const arr = jsonObj[key]
+  //       for (let i = 0; i < arr.length; i++) {
+  //         if (arr[i].hasOwnProperty('key') && arr[i].key === mustBeTrueValue) {
+  //           return arr[i]
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return null
+  // }
+
+  // const parentQuestion = findParentQuestion(surveyResponseObj, question?.mustBeTrue)
+  // console.log(parentQuestion)
 
   return (
     <StyledRow>

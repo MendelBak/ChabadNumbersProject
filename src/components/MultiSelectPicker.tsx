@@ -17,18 +17,6 @@ export default function MultiSelectPicker({
   incomingValues = question?.response?.map((response) => {
     return { label: response, value: response }
   })
-  console.log(
-    `incomingValues=question?.response?.map ~ incomingValues:`,
-    incomingValues
-  )
-  // for (let i = 0; i < question.response; i++) {
-  //   // const value = i.toString(36) + i
-  //   incomingValues.push({
-  //     label: `Long Label: ${value}`,
-  //     value:
-  //   });
-  // }
-
   return (
     <StyledSelect
       size="large"

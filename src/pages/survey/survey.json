@@ -19,12 +19,6 @@
       "type": "number",
       "placeholderText": "Number of Children",
       "mustBeTrue": "childrenBoolean"
-    },
-    {
-      "header": "How old are your children?",
-      "key": "ageOfChildren",
-      "type": "multiNumber",
-      "mustBeTrue": "childrenBoolean"
     }
   ],
   "Education": [

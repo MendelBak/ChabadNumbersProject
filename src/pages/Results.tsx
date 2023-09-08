@@ -1,11 +1,15 @@
 import { Button } from 'antd'
+import { useNavigate } from 'react-router-dom'
 
 export default function Results() {
+  const navigate = useNavigate()
   return (
     <>
       <h1>Results Page</h1>
       <p>outcome of success</p>
-      <Button type="dashed" href="/survey">Go Home</Button>
+      <Button type="dashed" onClick={() => navigate('/')}>
+        Go Home
+      </Button>
     </>
   )
 }
