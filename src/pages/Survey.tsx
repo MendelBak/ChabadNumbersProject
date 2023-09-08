@@ -21,6 +21,10 @@ import MultiSelectPicker from '../components/MultiSelectPicker'
 // import localforage from 'localforage'
 import { useSurvey, useSurveyDispatch } from '../SurveyContext'
 
+interface IHasKey {
+  key: string
+}
+
 export default function Survey() {
   const navigate = useNavigate()
   const surveyResponseObj = useSurvey()
@@ -44,20 +48,6 @@ export default function Survey() {
     | IChildren[] = surveyResponseObj[surveySections[sectionIndex]]
   let currentQuestion = currentSection[questionIndex]
 
-  // useEffect(() => {
-  //   async function getSurveyFromLocalStorage() {
-  //     try {
-  //       return await localforage.getItem('surveyResponse')
-  //     } catch (error) {
-  //       console.error('Error fetching user response data from local storage')
-  //     }
-  //   }
-
-  //   // getSurveyFromLocalStorage().then((data: ISurvey) => {
-  //   //   data ? setSurveyResponseObj(data) : setSurveyResponseObj(surveyData)
-  //   // })
-  // }, [])
-
   useEffect(() => {
     // refresh these items when a user response is recorded
     currentQuestion =
@@ -72,12 +62,14 @@ export default function Survey() {
   useEffect(() => {
     if ('mustBeTrue' in currentQuestion) {
       const mustBeTrueKey = currentQuestion.mustBeTrue
-      const foundQuestion = currentSection.find(
+      const foundQuestion = (currentSection as IHasKey[]).find(
         (question) => question.key === mustBeTrueKey
       )
 
       if (foundQuestion) {
-        mustBeTrueQuestion = foundQuestion
+        if ('response' in foundQuestion) {
+          mustBeTrueQuestion = foundQuestion
+        }
       }
     }
 
