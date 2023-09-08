@@ -10,9 +10,24 @@ export default function MultiSelectPicker({
 }) {
   console.log('MultiSelectPicker ~ question:', question)
   const handleChange = (value: string[]) => {
-    console.log(`selected ${value}`)
     updateResults(value)
   }
+
+  let incomingValues = []
+  incomingValues = question?.response?.map((response) => {
+    return { label: response, value: response }
+  })
+  console.log(
+    `incomingValues=question?.response?.map ~ incomingValues:`,
+    incomingValues
+  )
+  // for (let i = 0; i < question.response; i++) {
+  //   // const value = i.toString(36) + i
+  //   incomingValues.push({
+  //     label: `Long Label: ${value}`,
+  //     value:
+  //   });
+  // }
 
   return (
     <StyledSelect
@@ -23,6 +38,7 @@ export default function MultiSelectPicker({
       placeholder="Please select"
       onChange={handleChange}
       options={question.dropdownOptions}
+      value={incomingValues}
     />
   )
 }

@@ -1,4 +1,3 @@
-import surveyData from './survey/survey.json'
 import { useEffect, useState } from 'react'
 import BooleanPicker from '../components/BooleanPicker'
 import {
@@ -19,19 +18,19 @@ import Title from 'antd/es/typography/Title'
 import styled from 'styled-components'
 import MultiNumberPicker from '../components/MultiNumberPicker'
 import MultiSelectPicker from '../components/MultiSelectPicker'
-import localforage from 'localforage'
+// import localforage from 'localforage'
 import { useSurvey, useSurveyDispatch } from '../SurveyContext'
 
 export default function Survey() {
   const navigate = useNavigate()
-  const testData = useSurvey()
-  console.log(`Survey ~ test:`, testData)
+  const surveyResponseObj = useSurvey()
+  console.log(`Survey ~ test:`, surveyResponseObj)
   const dispatch = useSurveyDispatch()
-  const [surveyResponseObj, setSurveyResponseObj] =
-    useState<ISurvey>(surveyData)
+  // const [surveyResponseObj, setSurveyResponseObj] =
+  // useState<ISurvey>(surveyData)
 
   // Get the survey sections and initialize the section and question iterators
-  const surveySections = Object.keys(surveyData)
+  const surveySections = Object.keys(surveyResponseObj)
   const [sectionIndex, setSectionIndex] = useState(0)
   const [questionIndex, setQuestionIndex] = useState(0)
 
@@ -42,22 +41,22 @@ export default function Survey() {
     | IShlichus[]
     | IIncome[]
     | IEducation[]
-    | IChildren[] = surveyData[surveySections[sectionIndex]]
+    | IChildren[] = surveyResponseObj[surveySections[sectionIndex]]
   let currentQuestion = currentSection[questionIndex]
 
-  useEffect(() => {
-    async function getSurveyFromLocalStorage() {
-      try {
-        return await localforage.getItem('surveyResponse')
-      } catch (error) {
-        console.error('Error fetching user response data from local storage')
-      }
-    }
+  // useEffect(() => {
+  //   async function getSurveyFromLocalStorage() {
+  //     try {
+  //       return await localforage.getItem('surveyResponse')
+  //     } catch (error) {
+  //       console.error('Error fetching user response data from local storage')
+  //     }
+  //   }
 
-    getSurveyFromLocalStorage().then((data: ISurvey) => {
-      data ? setSurveyResponseObj(data) : setSurveyResponseObj(surveyData)
-    })
-  }, [])
+  //   // getSurveyFromLocalStorage().then((data: ISurvey) => {
+  //   //   data ? setSurveyResponseObj(data) : setSurveyResponseObj(surveyData)
+  //   // })
+  // }, [])
 
   useEffect(() => {
     // refresh these items when a user response is recorded
@@ -65,11 +64,11 @@ export default function Survey() {
       surveyResponseObj[surveySections[sectionIndex]][questionIndex]
     currentSection = surveyResponseObj[surveySections[sectionIndex]]
 
-    try {
-      localforage.setItem('surveyResponse', surveyResponseObj)
-    } catch (error) {
-      console.error('error saving user responses to local storage')
-    }
+    // try {
+    //   localforage.setItem('surveyResponse', surveyResponseObj)
+    // } catch (error) {
+    //   console.error('error saving user responses to local storage')
+    // }
   }, [surveyResponseObj])
 
   // Find the mustBeTrueQuestion, if any
@@ -117,7 +116,7 @@ export default function Survey() {
         surveyResponseObj[surveySections[newSectionIndex]][newQuestionIndex]
 
       let newMustBeTrueFulfilled = true
-      if (newQuestion.mustBeTrue) {
+      if (newQuestion?.mustBeTrue) {
         const newMustBeTrueKey = newQuestion.mustBeTrue
         const newMustBeTrueQuestion = newSection.find(
           (question) => question.key === newMustBeTrueKey
@@ -152,13 +151,13 @@ export default function Survey() {
         // Move to the last question in the previous section
         newSectionIndex--
         newQuestionIndex =
-          surveyData[surveySections[newSectionIndex]].length - 1
+        surveyResponseObj[surveySections[newSectionIndex]].length - 1
       } else {
         // We've reached the beginning of the survey
         break
       }
 
-      const newSection = surveyData[surveySections[newSectionIndex]]
+      const newSection = surveyResponseObj[surveySections[newSectionIndex]]
       const newQuestion = newSection[newQuestionIndex]
       let newMustBeTrueFulfilled = true
       if (newQuestion.mustBeTrue) {
@@ -237,22 +236,22 @@ export default function Survey() {
 
   function updateResults(userResponse) {
     console.log('updateResults ~ userResponse:', userResponse)
-    console.log('changing data', testData)
-    setSurveyResponseObj((prevState) => {
-      const newSection = [...prevState[surveySections[sectionIndex]]]
-      newSection[questionIndex] = {
-        ...newSection[questionIndex],
-        response: userResponse,
-      }
+    console.log('changing data', surveyResponseObj)
 
-      const test = {
-        ...prevState,
-        [surveySections[sectionIndex]]: newSection,
-      }
+    const newSection = [...surveyResponseObj[surveySections[sectionIndex]]]
+    newSection[questionIndex] = {
+      ...newSection[questionIndex],
+      response: userResponse,
+    }
+    console.log(`updateResults ~ newSection:`, newSection)
 
-      dispatch({ type: 'update', key: 'age', response: test })
-      return test
-    })
+    const test = {
+      ...surveyResponseObj,
+      [surveySections[sectionIndex]]: newSection,
+    }
+    console.log(`updateResults ~ test:`, test)
+
+    dispatch({ type: 'update', key: 'age', response: test })
   }
 
   function displayBackButton() {

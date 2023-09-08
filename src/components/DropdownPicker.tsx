@@ -6,20 +6,21 @@ interface IDropdownPickerProps {
   updateResults
 }
 
-export default function DropdownPicker (props: IDropdownPickerProps) {
+export default function DropdownPicker(props: IDropdownPickerProps) {
   const { question, updateResults } = props
 
-  function handleOnChange (newValue) {
+  function handleOnChange(newValue) {
     updateResults(newValue)
   }
 
   return (
     <StyledSelect
-      size='large'
-      placeholder='Select a value'
+      size="large"
+      placeholder="Select a value"
       onChange={handleOnChange}
       style={{ width: 400 }}
       options={question.dropdownOptions}
+      value={[question.response]}
     />
   )
 }

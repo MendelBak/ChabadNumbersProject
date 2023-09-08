@@ -1,13 +1,26 @@
 import { InputNumber } from 'antd'
 import styled from 'styled-components'
 
-export default function NumberPicker ({ question, updateResults }: { question, updateResults }) {
+export default function NumberPicker({
+  question,
+  updateResults,
+}: {
+  question
+  updateResults
+}) {
   const onChange = (value: number) => {
     updateResults(value)
   }
 
   return (
-    <StyledInputNumber size="large" min={0} max={120} placeholder={question.placeholderText} onChange={onChange} />
+    <StyledInputNumber
+      size="large"
+      min={0}
+      max={120}
+      placeholder={question.placeholderText}
+      onChange={onChange}
+      value={question.response}
+    />
   )
 }
 
@@ -22,11 +35,10 @@ const StyledInputNumber = styled(InputNumber)`
     justify-content: center;
   }
 
-  input.ant-input-number-input{
+  input.ant-input-number-input {
     display: flex;
     flex-direction: column;
     text-align: center;
     height: 100px;
   }
-
 `
