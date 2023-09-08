@@ -7,7 +7,6 @@ import {
   IEducation,
   IIncome,
   IShlichus,
-  ISurvey,
 } from './survey/ISurvey'
 import { useNavigate } from 'react-router-dom'
 import NumberPicker from '../components/NumberPicker'
