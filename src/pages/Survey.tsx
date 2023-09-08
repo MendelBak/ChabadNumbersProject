@@ -63,12 +63,6 @@ export default function Survey() {
     currentQuestion =
       surveyResponseObj[surveySections[sectionIndex]][questionIndex]
     currentSection = surveyResponseObj[surveySections[sectionIndex]]
-
-    // try {
-    //   localforage.setItem('surveyResponse', surveyResponseObj)
-    // } catch (error) {
-    //   console.error('error saving user responses to local storage')
-    // }
   }, [surveyResponseObj])
 
   // Find the mustBeTrueQuestion, if any
@@ -78,9 +72,13 @@ export default function Survey() {
   useEffect(() => {
     if ('mustBeTrue' in currentQuestion) {
       const mustBeTrueKey = currentQuestion.mustBeTrue
-      mustBeTrueQuestion = currentSection.find(
+      const foundQuestion = currentSection.find(
         (question) => question.key === mustBeTrueKey
       )
+
+      if (foundQuestion) {
+        mustBeTrueQuestion = foundQuestion
+      }
     }
 
     // Check if the current question fulfills the mustBeTrue condition
@@ -151,7 +149,7 @@ export default function Survey() {
         // Move to the last question in the previous section
         newSectionIndex--
         newQuestionIndex =
-        surveyResponseObj[surveySections[newSectionIndex]].length - 1
+          surveyResponseObj[surveySections[newSectionIndex]].length - 1
       } else {
         // We've reached the beginning of the survey
         break
